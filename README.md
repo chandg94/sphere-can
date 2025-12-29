@@ -100,7 +100,7 @@ Default address:
 
 http://127.0.0.1:8000
 
-## Client Usage
+### Client Usage
 
 ```bash
 cd sphere-can/cli
@@ -119,7 +119,7 @@ Set this inside the client venv:
 ```bash
 export SPHERE_CAN_API=http://<TAILSCALE_IP>:8000
 ``` 
-
+---
 ## REST API
 ### POST /can/send/{can_interface}
 
@@ -199,7 +199,7 @@ sphere-can readcan can0
 sphere-can readcan can0 --filter-id 0x123
 sphere-can readcan can0 --log can0.log
 sphere-can readcan can0 --filter-id 0x18FEF100 --log j1939.log
-```bash
+```
 Options:
 Option	Description
 can_interface	CAN interface (e.g., can0)
@@ -247,17 +247,17 @@ can_interface	CAN interface
 --count	Number of frames
 --random-id	Random IDs
 --random-data	Random payloads
-
+---
 ## Notes:
 - Ctrl+C stops transmission cleanly
 - --gap-ms 0 performs best-effort flooding
 - Kernel TX backpressure is handled safely
-
+---
 ## License
 
 Research and internal use. Licensing to be defined by the project owner.
-
+---
 ## Status
 
 Functional, stable, and demo-ready.
-
+---
