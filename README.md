@@ -1,31 +1,26 @@
-# Sphere-CAN
+# sphere-can
 
-Sphere-CAN is a remote-controllable CAN experimentation framework designed for
-vehicular cybersecurity research, testing, and demonstrations. It provides
-`candump`- and `cangen`-like functionality over a network via an API, making
-it suitable for remote testbeds.
+**sphere-can** is a remote-controllable CAN experimentation framework designed for
+vehicular cybersecurity research, testing, data collection and demonstrations. It provides
+`can-utils`-like functionality over a network via an API to a reconfigurable hardware testbed, making
+it suitable for hardware in the loop remote testing.
 
 The system consists of:
-- a **FastAPI server** that interfaces with Linux SocketCAN
-- a **pip-installable CLI** that offers standard CAN tooling
-- a **teensy 4.0 relay controller** for controlling hardware
+- a **FastAPI server** that interfaces with a SAE J1939 network via Linux SocketCAN
+- a **pip-installable CLI** that offers standard tooling to interact with the testbed via the API
+- a **teensy 4.0 relay controller** for controlling hardware setup over the network
 
 ---
 
 ## Architecture
 
-CLI → HTTP / WebSocket → FastAPI Server → python-can → SocketCAN → Kernel
-
-
-- CAN TX uses background generator threads
-- CAN RX is streamed via WebSockets
-- CLI generators run in the foreground (Ctrl+C semantics)
-- Server is client-IP agnostic
+CLI → HTTP / WebSocket → FastAPI Server → python-can → SocketCAN → Kernel → CAN Bus 
 
 ---
 
 ## Repository Layout
 
+```bash
 sphere-can/
 ├── server/
 │ ├── pyproject.toml
@@ -50,8 +45,7 @@ sphere-can/
 │   └── config.py
 │
 └── README.md
-
-
+```
 ---
 
 ## Requirements
@@ -59,6 +53,9 @@ sphere-can/
 ### System
 - Linux
 - SocketCAN enabled (`can0`, `vcan0`, etc.)
+- ```bash
+  sudo ip link set <can_interface> up type can bitrate <bitrate>
+  ```
 - Python ≥ 3.9
 
 ### Python dependencies
@@ -103,8 +100,6 @@ Default address:
 
 http://127.0.0.1:8000
 
-The server must run on a machine with access to SocketCAN interfaces.
-
 ## Client Usage
 
 ```bash
@@ -117,7 +112,7 @@ pip install -e .
 
 ### Environment Variables (Client)
 
-The CLI locates the server using the SPHERE_CAN_API environment variable.
+The CLI locates the server using the SPHERE_API environment variable.
 
 Set this inside the client venv:
 
@@ -131,7 +126,7 @@ export SPHERE_CAN_API=http://<TAILSCALE_IP>:8000
 Start a CAN traffic generator.
 
 Example request body:
-
+```bash
 {
   "name": "example-gen",
   "arbitration_id": 291,
@@ -143,25 +138,21 @@ Example request body:
   "interval_us": 10000,
   "count": null
 }
-
-    Spawns a background generator thread
-
-    Runs until stopped or count is reached
+```
+Spawns a background generator thread. Runs until stopped or count is reached.
 
 ### POST /can/stop/{name}
 
 Stop a running generator.
-
+```bash
 POST /can/stop/example-gen
-
-    Signals the generator thread to stop
-
-    Cleans up server state
+```
+Signals the generator thread to stop. Cleans up server state.
 
 ### GET /status
 
 Returns server state:
-
+```bash
 {
   "can_interfaces": ["can0"],
   "generators": [],
@@ -171,14 +162,12 @@ Returns server state:
     "bendix": false
   }
 }
-
+```
 ### WebSocket API
 /ws/readcan/{can_interface}
 
-Streams received CAN frames as JSON arrays.
-
-Example payload:
-
+Streams received CAN frames as JSON arrays. Example payload:
+```bash
 [
   {
     "ts": 1712859342.123456,
@@ -189,36 +178,28 @@ Example payload:
     "ext": false
   }
 ]
-
-    Push-only
-
-    Client-side filtering
-
-    Candump-compatible formatting in CLI
+```
+Push-only. Client-side filtering.
 
 ## CLI Usage
-### Install the CLI
-
-cd cli
-pip install -e .
 
 ### Verify:
-
+```bash
 sphere-can --help
-
+```
 ### readcan
 
 Read CAN traffic (candump-style).
-
+```bash
 sphere-can readcan <can_interface> [OPTIONS]
-
+```
 Examples:
-
+```bash
 sphere-can readcan can0
 sphere-can readcan can0 --filter-id 0x123
 sphere-can readcan can0 --log can0.log
 sphere-can readcan can0 --filter-id 0x18FEF100 --log j1939.log
-
+```bash
 Options:
 Option	Description
 can_interface	CAN interface (e.g., can0)
@@ -226,35 +207,35 @@ can_interface	CAN interface (e.g., can0)
 --log	Append output to a log file
 
 Output format:
-
+```bash
 (1712859342.123456) can0 0x123#deadbeef01020304
-
+```
 ### sendcan
 
 Generate CAN traffic (cangen-style). Runs in the foreground.
-
+```bash
 sphere-can sendcan <can_interface> [OPTIONS]
-
+```
 Examples:
-
+```bash
 sphere-can sendcan can0 \
   --id 123 \
   --data DEADBEEF01020304 \
   --len 8 \
   --gap-ms 10
-
+```
 Extended ID:
-
+```bash
 sphere-can sendcan can0 \
   --extended \
   --id 18FEF100 \
   --data AAAAAAAAAAAAAAAA \
   --len 8
-
+```
 DoS / flood:
-
+```bash
 sphere-can sendcan can0 --extended --id 00000000 --data 0000000000000000 --len 8 --gap-ms 0
-
+```
 Options:
 Option	Description
 can_interface	CAN interface
@@ -268,42 +249,9 @@ can_interface	CAN interface
 --random-data	Random payloads
 
 ## Notes:
-
-    Ctrl+C stops transmission cleanly
-
-    --gap-ms 0 performs best-effort flooding
-
-    Kernel TX backpressure is handled safely
-
-## Design Notes
-
-    Generator lifecycle uses threading.Event
-
-    HTTP requests are one-shot; generators outlive requests
-
-    WebSocket RX is push-only
-
-    Client-side filtering avoids server-side state explosion
-
-    Intended for operation behind VPN/WireGuard
-
-## Known Limitations
-
-    Sub-millisecond gaps are best-effort (Linux scheduling)
-
-    High-rate logging can bottleneck disk I/O
-
-    No built-in authentication (handled by network layer)
-
-## Intended Use
-
-    CAN DoS and spoofing demonstrations
-
-    Remote vehicular testbeds
-
-    Data collection for forensics and provenance research
-
-    Reproducible security experiments
+- Ctrl+C stops transmission cleanly
+- --gap-ms 0 performs best-effort flooding
+- Kernel TX backpressure is handled safely
 
 ## License
 
