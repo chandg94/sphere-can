@@ -237,16 +237,16 @@ DoS / flood:
 sphere-can sendcan can0 --extended --id 00000000 --data 0000000000000000 --len 8 --gap-ms 0
 ```
 Options:
-Option	Description
-can_interface	CAN interface
---id	Arbitration ID (hex)
---extended	Use 29-bit ID
---data	Hex payload
---len	DLC (default 8)
---gap-ms	Inter-frame gap (float, ms)
---count	Number of frames
---random-id	Random IDs
---random-data	Random payloads
+  Option	Description
+-  can_interface	CAN interface
+-  --id	Arbitration ID (hex)
+-  --extended	Use 29-bit ID
+-  --data	Hex payload
+-  --len	DLC (default 8)
+-  --gap-ms	Inter-frame gap (float, ms)
+-  --count	Number of frames
+-  --random-id	Random IDs
+-  --random-data	Random payloads
 ---
 ## Notes:
 - Ctrl+C stops transmission cleanly
@@ -254,10 +254,8 @@ can_interface	CAN interface
 - Kernel TX backpressure is handled safely
 ---
 ## License
-
-Research and internal use. Licensing to be defined by the project owner.
+- Research and internal use. Licensing to be defined by the project owner.
 ---
 ## Status
-
-Functional, stable, and demo-ready.
+- Functional, stable, and demo-ready.
 ---
