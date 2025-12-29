@@ -1,0 +1,8 @@
+Metadata-Version: 2.4
+Name: sphere-can-cli
+Version: 0.1.0
+Summary: SPHERE CAN command-line interface
+Requires-Python: >=3.9
+Requires-Dist: typer
+Requires-Dist: requests
+Requires-Dist: websocket-client

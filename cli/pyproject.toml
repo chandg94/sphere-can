@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sphere-can-cli"
+version = "0.1.0"
+description = "SPHERE CAN command-line interface"
+requires-python = ">=3.9"
+dependencies = [
+    "typer",
+    "requests",
+    "websocket-client",
+]
+
+[project.scripts]
+sphere-can = "sphere_can.main:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
