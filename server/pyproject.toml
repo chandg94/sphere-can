@@ -12,6 +12,7 @@ dependencies = [
     "uvicorn",
     "python-can",
     "pyserial",
+    "websockets"
 ]
 
 [tool.setuptools.packages.find]

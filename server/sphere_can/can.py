@@ -6,31 +6,49 @@ import time
 
 class CANBackend:
     def __init__(self, channel: str):
-        self.channel = channel
-        self.bus = can.interface.Bus(
+        self.rx_bus = can.interface.Bus(
+            channel=channel,
+            bustype="socketcan",
+            receive_own_messages=True
+        )
+        self.tx_bus = can.interface.Bus(
             channel=channel,
             bustype="socketcan"
         )
-        self.rx_queue = queue.Queue(maxsize=4096)
+        self.rx_queue = queue.Queue(maxsize=10000)
+        # self.tx_queue = queue.Queue(maxsize=10000)
         self.running = True
 
-        self.rx_thread = threading.Thread(
-            target=self._rx_worker,
+        self.rx_worker = threading.Thread(
+            target=self.rx_worker,
             daemon=True
         )
-        self.rx_thread.start()
+        self.rx_worker.start()
 
-    def _rx_worker(self):
+    def rx_worker(self):
         while self.running:
-            msg = self.bus.recv(timeout=1.0)
+            msg = self.rx_bus.recv(timeout=0.01)
             if msg:
                 try:
                     self.rx_queue.put_nowait(msg)
                 except queue.Full:
-                    pass  # drop frames under load
+                    pass
+    # def _rx_worker(self):
+    #     while self.running:
+    #         msg = self.bus.recv(timeout=1.0)
+    #         if msg:
+    #             try:
+    #                 self.rx_queue.put_nowait(msg)
+    #             except queue.Full:
+    #                 pass  # drop frames under load
 
     def send(self, msg: can.Message):
-        self.bus.send(msg)
+        self.tx_bus.send(msg)
+    # def send(self, msg: can.Message):
+    #     try:
+    #         self.tx_queue.put_nowait(msg)
+    #     except queue.Full:
+    #         pass  # drop or log
 
     def stop(self):
         self.running = False

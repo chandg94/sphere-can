@@ -1,6 +1,6 @@
 import os
 
-DEFAULT_API = "http://127.0.0.1:8000"
+DEFAULT_API = "http://server:8000"
 
 def api_base():
     return os.environ.get("SPHERE_API", DEFAULT_API)

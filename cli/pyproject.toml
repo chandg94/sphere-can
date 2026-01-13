@@ -1,12 +1,15 @@
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools>=64", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "sphere-can-cli"
-version = "0.1.0"
+name = "sphere-can"
+version = "0.1.2"
 description = "SPHERE CAN command-line interface"
+readme = "README.md"
 requires-python = ">=3.9"
+license = { text = "MIT" }
+
 dependencies = [
     "typer",
     "requests",
@@ -15,6 +18,3 @@ dependencies = [
 
 [project.scripts]
 sphere-can = "sphere_can.main:main"
-
-[tool.setuptools.packages.find]
-where = ["."]

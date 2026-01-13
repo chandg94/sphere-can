@@ -1,5 +1,4 @@
 import requests
-import time
 import uuid
 from typing import Optional
 from sphere_can.config import api_base
@@ -34,8 +33,9 @@ def sendcan(
     count: Optional[int] = None,
 ):
     """
-    CAN traffic generator (cangen-style).
-    Ctrl+C stops transmission.
+    Start CAN traffic generator (cangen-style).
+
+    Stopping is handled via `sphere-can stop <name>`.
     """
 
     name = f"cli-{uuid.uuid4().hex[:8]}"
@@ -56,22 +56,10 @@ def sendcan(
     }
 
     start_url = f"{api_base()}/can/send/{can_interface}"
-    stop_url = f"{api_base()}/can/stop/{name}"
 
     r = requests.post(start_url, json=req)
     r.raise_for_status()
 
-    print(f"[sendcan] running (name={name}) — Ctrl+C to stop")
-
-    try:
-        # Block like cangen
-        while True:
-            time.sleep(1)
-
-    except KeyboardInterrupt:
-        print("\n[sendcan] stopping…")
-        try:
-            requests.post(stop_url, timeout=2)
-            print("[sendcan] stopped")
-        except Exception as e:
-            print(f"[sendcan] stop failed: {e}")
+    print("[sendcan] started")
+    print(f"[sendcan] name = {name}")
+    print(f"[sendcan] stop with: sphere-can stop {name}")

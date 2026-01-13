@@ -1,2 +1,0 @@
-[console_scripts]
-sphere-can = sphere_can.main:main
