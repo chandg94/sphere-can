@@ -67,21 +67,6 @@ sphere-can/
 - requests
 - typer
 
-### Installing Tailscale
-
-On **both server and client machines**:
-
-```bash
-curl -fsSL https://tailscale.com/install.sh | sh
-sudo tailscale up
-tailscale ip -4
-```
-Example output:
-```bash
-100.94.12.37
-```
----
-
 ## Server Usage
 
 ### Start the server
@@ -90,6 +75,7 @@ Example output:
 cd sphere-can/server
 python3 -m venv venv
 source venv/bin/activate
+pip install -e .
 python3 -m uvicorn sphere_can.main:app --host <SERVER_IP> --port 8000
 ```
 
