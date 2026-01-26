@@ -78,7 +78,7 @@ Enable the DDEC controller:
 ```bash
 sphere-can setup on ddec
 ```
-You can do the same for other controllers using the same command. Use the following instead of **<ddec>**. Available controllers:
+You can do the same for other controllers using the same command. Use the following instead of **`ddec`**. Available controllers:
 - cummins
 - bendix
 
@@ -155,7 +155,7 @@ Turn off the DDEC controller:
 sphere-can setup off ddec
 ```
 
-If you have turned any other controllers ON, turn them off as well with the same command. Use the name of the controller instead of **<ddec>** (example **<cummins>** and **<bendix>**).
+If you have turned any other controllers ON, turn them off as well with the same command. Use the name of the controller instead of **`ddec`** (example **`cummins`** and **`bendix`**).
 
 **NOTE: You must turn off all controllers before logging off.**
 
