@@ -42,7 +42,8 @@ sphere-can/
 │   ├── readcan.py # candump-style RX
 │   ├── sendcan.py # cangen-style TX
 │   ├── status.py
-│   └── config.py
+│   ├── config.py
+│   └── stop.py
 │
 └── README.md
 ```
@@ -66,21 +67,6 @@ sphere-can/
 - requests
 - typer
 
-### Installing Tailscale
-
-On **both server and client machines**:
-
-```bash
-curl -fsSL https://tailscale.com/install.sh | sh
-sudo tailscale up
-tailscale ip -4
-```
-Example output:
-```bash
-100.94.12.37
-```
----
-
 ## Server Usage
 
 ### Start the server
@@ -89,35 +75,25 @@ Example output:
 cd sphere-can/server
 python3 -m venv venv
 source venv/bin/activate
-uvicorn sphere_can.main:app
+pip install -e .
+python3 -m uvicorn sphere_can.main:app --host <SERVER_IP> --port 8000
 ```
-or
-```bash
-uvicorn sphere_can.main:app --host <TAILSCALE_IP> --port 8000
-```
-
-Default address:
-
-http://127.0.0.1:8000
 
 ### Client Usage
 
 ```bash
-cd sphere-can/cli
-python3 -m venv venv
-source venv/bin/activate
 pip install --upgrade pip
-pip install -e .
+pip install sphere-can
 ```
 
 ### Environment Variables (Client)
 
-The CLI locates the server using the SPHERE_API environment variable.
+The CLI locates the server using the SPHERE_API environment variable. Its by default set to point to the server.
 
-Set this inside the client venv:
+To change, set this inside the client venv:
 
 ```bash
-export SPHERE_CAN_API=http://<TAILSCALE_IP>:8000
+export SPHERE_API=http://<SERVER_IP>:8000
 ``` 
 ---
 ## REST API
@@ -249,7 +225,6 @@ Options:
 -  --random-data	Random payloads
 ---
 ## Notes:
-- Ctrl+C stops transmission cleanly
 - --gap-ms 0 performs best-effort flooding
 - Kernel TX backpressure is handled safely
 ---
