@@ -78,6 +78,9 @@ Enable the DDEC controller:
 ```bash
 sphere-can setup on ddec
 ```
+You can do the same for other controllers using the same command. Use the following instead of <ddec> Available controller:
+- cummins
+- bendix
 
 Wait a moment, then verify again:
 ```bash
@@ -104,6 +107,8 @@ Open another Terminal tab
 Leave the first terminal running readcan
 
 ## Step 10: Launch a Network Flood / Denial-of-Service Test
+
+Set the TIME_IN_SECONDS in the previous step to more than 60 (1min), otherwise, you can't observe the effect.
 
 From the second terminal, send a high-rate CAN message flood:
 ```bash
@@ -149,6 +154,10 @@ Turn off the DDEC controller:
 ```bash
 sphere-can setup off ddec
 ```
+
+If you have turned any other controllers ON, turn them off as well with the same command. Use the name of the controller instead of <ddec> (example <cummins> and <bendix>).
+
+**NOTE: You must turn off all controllers before logging off.**
 
 Verify:
 ```bash
