@@ -76,7 +76,7 @@ cd sphere-can/server
 python3 -m venv venv
 source venv/bin/activate
 pip install -e .
-nohup venv/bin/python -m uvicorn sphere_can.main:app \ --host 0.0.0.0 \ --port 8000 \ > uvicorn.log 2>&1 &
+nohup venv/bin/python -m uvicorn sphere_can.main:app --host 0.0.0.0 --port 8000 > uvicorn.log 2>&1 &
 ```
 
 ### Client Usage
