@@ -39,32 +39,12 @@ All remaining steps are performed inside the terminal environment.
 
 ## Step 4: Install the SPHERE-CAN CLI
 
-First, ensure pip is up to date:
-```bash
-pip install --upgrade pip
-```
 Then install the SPHERE-CAN CLI (if not already installed):
 ```bash
 pip install sphere-can
 ```
-Verify installation:
-```bash
-sphere-can --help
-```
-You should see a list of available commands.
 
-## Step 5: Configure Environment Variables (Client)
-
-The CLI locates the SPHERE server using the SPHERE_API environment variable.
-
-**By default, this is already configured to point to the correct server.**
-If you need to change it, inside the terminal, run:
-```bash
-export SPHERE_API=http://<SERVER_IP>:8000
-```
-Replace <SERVER_IP> with the server address provided for your setup.
-
-## Step 6: Check System Status
+## Step 5: Check System Status
 
 Before enabling anything, check the current system status:
 ```bash
@@ -72,7 +52,7 @@ sphere-can status
 ```
 This shows which controllers and interfaces are currently active.
 
-## Step 7: Turn On a Controller
+## Step 6: Turn On a Controller
 
 Enable the DDEC controller:
 ```bash
@@ -82,13 +62,13 @@ You can do the same for other controllers using the same command. Use the follow
 - cummins
 - bendix
 
-Wait a moment, then verify again:
+Verify status again:
 ```bash
 sphere-can status
 ```
 You should now see the controller enabled.
 
-## Step 8: Read CAN Traffic (Listener)
+## Step 7: Read CAN Traffic (Listener)
 
 Start reading CAN data from interface can0.
 
@@ -98,7 +78,7 @@ This ensures the command exits cleanly without relying on SIGINT, which is not a
 sphere-can readcan can0 --timeout <TIME_IN_SECONDS>
 ```
 
-## Step 9: Open a Second Terminal
+## Step 8: Open a Second Terminal
 
 In Jupyter:
 
@@ -106,7 +86,7 @@ Open another Terminal tab
 
 Leave the first terminal running readcan
 
-## Step 10: Launch a Network Flood / Denial-of-Service Test
+## Step 9: Launch a Network Flood / Denial-of-Service Test
 
 Set the TIME_IN_SECONDS in the previous step to more than 60 (1min), otherwise, you can't observe the effect.
 
@@ -128,17 +108,17 @@ This command:
 
 - Sends messages as fast as possible (gap-ms 0)
 
-## Step 11: Observe Traffic
+## Step 10: Observe Traffic
 
 Switch back to the readcan terminal.
 
 You should see messages with:
 ```bash
-00000000#0000000000000000
+0#0000000000000000
 ```
 appearing in the output.
 
-## Step 12: Stop the Traffic Generator
+## Step 11: Stop the Traffic Generator
 
 Follow the instructions printed by sendcan when it started.
 Typically, this will look like:
@@ -148,7 +128,7 @@ sphere-can stop <name>
 
 Once stopped, the traffic should cease.
 
-### Step 13: Shut Down the Controller
+### Step 12: Shut Down the Controller
 
 Turn off the DDEC controller:
 ```bash
